@@ -6,7 +6,7 @@ volumes:
 
 services:
   app:
-    image: pres:latest
+    build: .
     ports:
       - 80:80
     volumes:
