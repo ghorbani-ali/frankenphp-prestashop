@@ -1,6 +1,7 @@
-FROM dunglas/frankenphp:1.1-php8-alpine
-
+ARG FRANKENPHP_IMAGE=1.1.5-php8.2-alpine
 ARG PRESTASHOP_VERSION=8.1.6
+
+FROM dunglas/frankenphp:${FRANKENPHP_IMAGE}
 
 WORKDIR /var/www/html
 
