@@ -1,0 +1,112 @@
+{
+	debug
+
+	frankenphp
+
+	order php_server before file_server
+}
+
+http://localhost {
+	root * /var/www/html
+	encode zstd br gzip
+
+	# Images rewrites
+	@images1 {
+		path_regexp images1 ^/(\d)(-[\w-]+)?/.+\.jpg$
+	}
+	rewrite @images1 /img/p/{http.regexp.images1.1}/{http.regexp.images1.1}{http.regexp.images1.2}.jpg
+
+	@images2 {
+		path_regexp images2 ^/(\d)(\d)(-[\w-]+)?/.+\.jpg$
+	}
+	rewrite @images2 /img/p/{http.regexp.images2.1}/{http.regexp.images2.2}/{http.regexp.images2.1}{http.regexp.images2.2}{http.regexp.images2.3}.jpg
+
+	@images3 {
+		path_regexp images3 ^/(\d)(\d)(\d)(-[\w-]+)?/.+\.jpg$
+	}
+	rewrite @images3 /img/p/{http.regexp.images3.1}/{http.regexp.images3.2}/{http.regexp.images3.3}/{http.regexp.images3.1}{http.regexp.images3.2}{http.regexp.images3.3}{http.regexp.images3.4}.jpg
+
+	@images4 {
+		path_regexp images4 ^/(\d)(\d)(\d)(\d)(-[\w-]+)?/.+\.jpg$
+	}
+	rewrite @images4 /img/p/{http.regexp.images4.1}/{http.regexp.images4.2}/{http.regexp.images4.3}/{http.regexp.images4.4}/{http.regexp.images4.1}{http.regexp.images4.2}{http.regexp.images4.3}{http.regexp.images4.4}{http.regexp.images4.5}.jpg
+
+	@images5 {
+		path_regexp images5 ^/(\d)(\d)(\d)(\d)(\d)(-[\w-]+)?/.+\.jpg$
+	}
+	rewrite @images5 /img/p/{http.regexp.images5.1}/{http.regexp.images5.2}/{http.regexp.images5.3}/{http.regexp.images5.4}/{http.regexp.images5.5}/{http.regexp.images5.1}{http.regexp.images5.2}{http.regexp.images5.3}{http.regexp.images5.4}{http.regexp.images5.5}{http.regexp.images5.6}.jpg
+
+	@images6 {
+		path_regexp images6 ^/(\d)(\d)(\d)(\d)(\d)(\d)(-[\w-]+)?/.+\.jpg$
+	}
+	rewrite @images6 /img/p/{http.regexp.images6.1}/{http.regexp.images6.2}/{http.regexp.images6.3}/{http.regexp.images6.4}/{http.regexp.images6.5}/{http.regexp.images6.6}/{http.regexp.images6.1}{http.regexp.images6.2}{http.regexp.images6.3}{http.regexp.images6.4}{http.regexp.images6.5}{http.regexp.images6.6}{http.regexp.images6.7}.jpg
+
+	@images7 {
+		path_regexp images7 ^/(\d)(\d)(\d)(\d)(\d)(\d)(\d)(-[\w-]+)?/.+\.jpg$
+	}
+	rewrite @images7 /img/p/{http.regexp.images7.1}/{http.regexp.images7.2}/{http.regexp.images7.3}/{http.regexp.images7.4}/{http.regexp.images7.5}/{http.regexp.images7.6}/{http.regexp.images7.7}/{http.regexp.images7.1}{http.regexp.images7.2}{http.regexp.images7.3}{http.regexp.images7.4}{http.regexp.images7.5}{http.regexp.images7.6}{http.regexp.images7.7}{http.regexp.images7.8}.jpg
+
+	@images8 {
+		path_regexp images8 ^/(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(-[\w-]+)?/.+\.jpg$
+	}
+	rewrite @images8 /img/p/{http.regexp.images8.1}/{http.regexp.images8.2}/{http.regexp.images8.3}/{http.regexp.images8.4}/{http.regexp.images8.5}/{http.regexp.images8.6}/{http.regexp.images8.7}/{http.regexp.images8.8}/{http.regexp.images8.1}{http.regexp.images8.2}{http.regexp.images8.3}{http.regexp.images8.4}{http.regexp.images8.5}{http.regexp.images8.6}{http.regexp.images8.7}{http.regexp.images8.8}{http.regexp.images8.9}.jpg
+
+	@categoryImages {
+		path_regexp categoryImages ^/c/([\w.-]+)/.+\.jpg$
+	}
+	rewrite @categoryImages /img/c/{http.regexp.categoryImages.1}.jpg
+
+	# Web service API
+	@api {
+		path_regexp api ^/api/?(.*)$
+	}
+	rewrite @api /webservice/dispatcher.php?url={http.regexp.api.1}
+
+	# Installation sandbox
+	@sandbox {
+		path_regexp sandbox ^(/install(?:-dev)?/sandbox)/.*
+	}
+	rewrite @sandbox {http.regexp.sandbox.1}/test.php
+
+	# Deny access to dotfiles (e.g., .htaccess, .DS_Store, .htpasswd)
+	@dotfiles {
+		path_regexp /\.
+	}
+	respond @dotfiles 403
+
+	# Deny access to source code directories
+	@sourcedirs {
+		not path /.well-known*
+		path_regexp ^/(app|bin|cache|classes|config|controllers|docs|localization|override|src|tests|tools|translations|var|vendor)/
+	}
+	respond @sourcedirs 403
+
+	# Deny access to vendor directories in modules
+	@modulesvendor {
+		path_regexp ^/modules/.*/vendor/
+	}
+	respond @modulesvendor 403
+
+	# Deny access to specific file types (log, tpl, twig, sass, yml)
+	@sensitivefiles {
+		path_regexp \.(log|tpl|twig|sass|yml)$
+	}
+	respond @sensitivefiles 403
+
+	# Prevent injection of PHP files in img and upload directories
+	@imgphp {
+		path /img/*.php
+	}
+	respond @imgphp 403
+
+	@uploadphp {
+		path /upload/*.php
+	}
+	respond @uploadphp 403
+
+	handle {
+		try_files {path} {path}/ /index.php{query}
+	}
+
+	php_server
+}
