@@ -5,11 +5,16 @@ the modern app server for PHP.
 
 ## Getting Started
 
-```console
+```bash
 git clone https://github.com/ghorbani-ali/frankenphp-prestashop.git
 cd frankenphp-prestashop
 docker compose pull --include-deps
 docker compose up
+```
+#### You can custom Prestashop and FrankenPHP versions in .env file:
+```bash
+FRANKENPHP_IMAGE_VERSION= # FeankenPHP image version
+PRESTASHOP_VERSION= # Prestashop relese version
 ```
 
 Prestashop is available on `http://localhost`.
