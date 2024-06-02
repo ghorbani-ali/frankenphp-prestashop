@@ -1,0 +1,38 @@
+volumes:
+  app-data:
+  db-data:
+
+services:
+  app:
+    build:
+      context: .
+      args:
+        FRANKENPHP_IMAGE_VERSION: ${FRANKENPHP_IMAGE_VERSION}
+        PRESTASHOP_VERSION: ${PRESTASHOP_VERSION}
+    ports:
+      - 80:80
+    volumes:
+      - app-data:/var/www/html
+      - ./Caddyfile:/etc/caddy/Caddyfile  # if you want to customize Caddyfile
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:5
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin
+    ports:
+      - 8888:80
+    environment:
+      - PMA_HOST
+      - MYSQL_ROOT_PASSWORD
+      - PMA_ARBITRARY
+    restart: always
