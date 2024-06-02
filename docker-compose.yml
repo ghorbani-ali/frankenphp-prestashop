@@ -4,7 +4,11 @@ volumes:
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      args:
+        FRANKENPHP_IMAGE_VERSION: ${FRANKENPHP_IMAGE_VERSION}
+        PRESTASHOP_VERSION: ${PRESTASHOP_VERSION}
     ports:
       - 80:80
     volumes:
