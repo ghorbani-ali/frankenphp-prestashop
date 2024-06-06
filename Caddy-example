@@ -1,0 +1,52 @@
+{
+	debug
+
+	# {$CADDY_GLOBAL_OPTIONS}
+
+	# frankenphp
+	frankenphp {
+		worker /var/www/html/index.php
+	}
+
+	order php_server before file_server
+}
+
+# {$CADDY_EXTRA_CONFIG} 
+
+localhost {
+	root * /var/www/html
+	encode zstd br gzip
+
+	# rewrite /^\/(\d)(-[\w-]+)?\/.+\.jpg$/ /img/p/$1/$1$2.jpg
+	# rewrite /^\/(\d)(\d)(-[\w-]+)?\/.+\.jpg$/ /img/p/$1/$2/$1$2$3.jpg
+	# rewrite /^\/(\d)(\d)(\d)(-[\w-]+)?\/.+\.jpg$/ /img/p/$1/$2/$3/$1$2$3$4.jpg
+	# rewrite /^\/(\d)(\d)(\d)(\d)(-[\w-]+)?\/.+\.jpg$/ /img/p/$1/$2/$3/$4/$1$2$3$4$5.jpg
+	# rewrite /^\/(\d)(\d)(\d)(\d)(\d)(-[\w-]+)?\/.+\.jpg$/ /img/p/$1/$2/$3/$4/$5/$1$2$3$4$5$6.jpg
+	# rewrite /^\/(\d)(\d)(\d)(\d)(\d)(\d)(-[\w-]+)?\/.+\.jpg$/ /img/p/$1/$2/$3/$4/$5/$6/$1$2$3$4$5$6$7.jpg
+	# rewrite /^\/(\d)(\d)(\d)(\d)(\d)(\d)(\d)(-[\w-]+)?\/.+\.jpg$/ /img/p/$1/$2/$3/$4/$5/$6/$7/$1$2$3$4$5$6$7$8.jpg
+	# rewrite /^\/(\d)(\d)(\d)(\d)(\d)(\d)(\d)(\d)(-[\w-]+)?\/.+\.jpg$/ /img/p/$1/$2/$3/$4/$5/$6/$7/$8/$1$2$3$4$5$6$7$8$9.jpg
+	# rewrite /^\/c\/([\w.-]+)\/.+\.jpg$/ /img/c/$1.jpg
+
+	# handle {
+	# 	try_files {path} {path}/ /index.php{query}
+	# 	php_server
+	# }
+	# log {
+	# 	level DEBUG
+	# }
+
+	# route {
+	# 	@canonicalPath {
+	# 		file {path}/index.php
+	# 		not path */
+	# 	}
+	# 	@indexFiles file {
+	# 		try_files {path} {path}/index.php index.php
+	# 		split_path .php
+	# 	}
+	# }
+
+	# {$CADDY_SERVER_EXTRA_DIRECTIVES}
+
+	php_server
+}
