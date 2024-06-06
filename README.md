@@ -1,7 +1,5 @@
 # Prestashop on FrankenPHP
 
-![frankenphp-prestashop](./logo.png)
-
 Run the popular [Prestashop eCommerce](https://prestashop.com/) on top of [FrankenPHP](https://frankenphp.dev),
 the modern app server for PHP.
 
